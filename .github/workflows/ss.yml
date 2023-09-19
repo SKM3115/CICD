@@ -38,15 +38,15 @@ jobs:
           docker login -u sivashreek -p shreemani
           docker push sivashreek/kubn:${{ github.run_number }}
 
-      - name: Configure Kubernetes
+      - name: Push Docker image
         run: |
-          mkdir -p ~/.kube
-          echo "$KUBECONFIG" > ~/.kube/config
+            docker login -u vipv -p 9092897730 
+            #KUBECONFIG_PASS
+            docker push vipv/kuber:${{ github.run_number }}
 
-      - name: Deploy to Kubernetes
+      - name: Run Docker image
         run: |
-          kubectl apply -f node-web-app-deployment.yaml
-          kubectl apply -f node-web-app-service.yaml
+          docker run -p 8000:8000 vipv/kuber:${{ github.run_number }}
 
       - name: Clean up
         run: |
