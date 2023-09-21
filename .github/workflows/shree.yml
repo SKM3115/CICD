@@ -41,9 +41,9 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push $DOCKERHUB_REGISTRY:latest
           
-      - name: Run Docker image
-        run: |
-          docker run -p 8000:8000 $DOCKERHUB_REGISTRY:latest
+      #- name: Run Docker image
+    #    run: |
+        #  docker run -p 8000:8000 $DOCKERHUB_REGISTRY:latest
 
       - name: Logout from Docker
         run: docker logout
