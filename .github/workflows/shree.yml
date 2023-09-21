@@ -1,4 +1,4 @@
-name: SKCeles
+name: sk celes
 
 on:
   push:
@@ -11,42 +11,56 @@ jobs:
 
     env:
       KUBECONFIG_PASS: ${{ secrets.KUBECONFIG_PWD }}
-      DOCKERHUB_REGISTRY:  sivashreek/kubn
+      DOCKERHUB_REGISTRY: vipv/kuber
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '14' # Use the desired Node.js version
 
       - name: Install Dependencies
         run: npm install
 
+
       - name: SonarQube Analysis
         run: |
-          curl -o sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
-          echo "C:\\Users\\vipv\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat"
+         curl -o sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
+         echo "C:\\Users\\vipv\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat"
+
+         
+      - name: Test using Jest
+        run: npm test
 
       - name: Run JMeter Tests
         uses: QAInsights/PerfAction@v3.1
         with:
           test-plan-path: ./CSVSample.jmx
 
-      - name: Build and Push Docker image
+      - name: Build Docker image
         run: |
-          docker build -t $DOCKERHUB_REGISTRY:latest .
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push $DOCKERHUB_REGISTRY:latest
-          
-      #- name: Run Docker image
-    #    run: |
-        #  docker run -p 8000:8000 $DOCKERHUB_REGISTRY:latest
+            docker build -t vipv/kuber:${{ github.run_number }} .
+
+      - name: Push Docker image
+        run: |
+            docker login -u vipv -p 9092897730 
+            #KUBECONFIG_PASS
+            docker push vipv/kuber:${{ github.run_number }}
+
+      - name: Run Docker image
+        run: |
+          docker run -p 8000:8000 vipv/kuber:${{ github.run_number }}
 
       - name: Logout from Docker
         run: docker logout
+
+      #- name: Deploy to Kubernetes
+       # run: |
+        #  kubectl apply -f node-web-app-deployment.yaml
+         # kubectl apply -f node-web-app-service.yaml
 
       - name: Run Selenium Test
         run: |
