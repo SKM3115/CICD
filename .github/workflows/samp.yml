@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Run Localhost Service in GitHub Actions
 
 on:
   push:
@@ -6,22 +6,28 @@ on:
       - main
 
 jobs:
-  build:
+  run-localhost-service:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up Docker
-        uses: actions/setup-python@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          python-version: '3.x'
+          node-version: '14'
 
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Build and Push Docker Image
+      - name: Start Localhost Service
         run: |
-          docker build -t  sivashreek/kubn:latest .
-          docker push  sivashreek/kubn:latest
+          # Start your service on localhost:8000 (for example, a Node.js app)
+          npm start &
+
+          # Install socat
+          sudo apt-get update && sudo apt-get install -y socat
+
+          # Use socat to forward traffic from port 8001 to localhost:8000
+          socat TCP-LISTEN:8001,fork TCP:localhost:8000
