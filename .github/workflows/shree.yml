@@ -37,7 +37,7 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          docker build -t $DOCKERHUB_REGISTRY:${{ github.run_number }} .
+          docker build -t $DOCKERHUB_REGISTRY:latest .
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push $DOCKERHUB_REGISTRY:latest
           
