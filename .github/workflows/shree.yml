@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Docker image
         run: |
-          docker run -p 1150:1150 $DOCKERHUB_REGISTRY:${{ github.run_number }}
+          docker run -p 1150:8000 $DOCKERHUB_REGISTRY:${{ github.run_number }}
 
       - name: Logout from Docker
         run: docker logout
