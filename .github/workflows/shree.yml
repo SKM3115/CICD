@@ -11,7 +11,7 @@ jobs:
 
     env:
       KUBECONFIG_PASS: ${{ secrets.KUBECONFIG_PWD }}
-      DOCKERHUB_REGISTRY: vipv/kuber
+      DOCKERHUB_REGISTRY:  sivashreek/kubn
 
     steps:
       - name: Checkout
@@ -38,12 +38,12 @@ jobs:
       - name: Build and Push Docker image
         run: |
           docker build -t $DOCKERHUB_REGISTRY:${{ github.run_number }} .
-          docker login -u vipv -p 9092897730
-          docker push $DOCKERHUB_REGISTRY:${{ github.run_number }}
-
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push $DOCKERHUB_REGISTRY:latest
+          
       - name: Run Docker image
         run: |
-          docker run -p 1150:8000 $DOCKERHUB_REGISTRY:${{ github.run_number }}
+          docker run -p 8000:8000 $DOCKERHUB_REGISTRY:latest
 
       - name: Logout from Docker
         run: docker logout
